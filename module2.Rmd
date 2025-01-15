@@ -20,6 +20,11 @@ library(tidyverse)
 #library(knitr)
 ```
 
+```{r dataset}
+vehicule <- read.csv("Dataset 1.csv")
+head(vehicule)
+```
+
 ## Statistiques descriptives
 
 ### Exercice1

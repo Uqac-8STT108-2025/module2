@@ -27,15 +27,15 @@ head(vehicule)
 
 ## Statistiques descriptives
 
-### Exercice1
+### Exercice 1
 
-### Exercice2
+### Exercice 2
 
-### Exercice3
+### Exercice 3
 
-### Exercice4
+### Exercice 4
 
-### Exercice5
+### Exercice 5
 
 ## Détection de bruit et données abbérantes
 

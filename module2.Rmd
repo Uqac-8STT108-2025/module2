@@ -104,7 +104,7 @@ plot_distribution(iris, "Sepal.Width",
                   color = "green")
 ```
 ### Exercice 3
-
+cor(x,y)=0,1881861
 La corrélation indique un lien faible ou non linéaire entre x et y.
 
 

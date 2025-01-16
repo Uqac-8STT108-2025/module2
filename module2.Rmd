@@ -29,9 +29,101 @@ head(vehicule)
 
 ### Exercice 1
 
+calculons la moyenne et variance, que remarquez-vous? Pourquoi?
+
+On remarque que:Les valeurs de la moyenne et de la variance calculées sur un échantillon ne sont pas égales aux valeurs théoriques (moyenne=0 et variance=1).
+
+Parce que:Avec une petite echantillon de n=100 les nombres aléatoires générés ne couvrent pas uniformément tout l’espace de la distribution normale.
+
+```{r}
+set.seed(42)
+x <- rnorm(100, mean = 0, sd = 1)
+
+#Calculons la moyenne
+
+mean_x <- mean(x)
+
+#Calculons la variance
+
+var_x <- var(x)
+
+#Les résultats
+
+cat("Moyenne :", mean_x, "\n")
+cat("Variance :", var_x, "\n")
+```
+Augmenter le nombre d’observation dans la fonction rnorm() qui génère des données d’une loi normale, que se passe t-il?
+
+En augmentant le nombre d'observation a n=10000 nous remarquons que les résultats sont très proches des valeurs théoriques(moyenne=0 et variance=1).
+
+```{r}
+set.seed(123)
+x_large <- rnorm(10000, mean = 0, sd = 1)
+
+#Calcul de la moyenne
+
+mean_large <- mean(x_large)
+
+#Calcul de la variance
+
+var_large <- var(x_large)
+
+#Affichage des résultats
+
+cat("Moyenne avec grand échantillon :", mean_large, "\n")
+cat("Variance avec grand échantillon :", var_large, "\n")
+```
+
 ### Exercice 2
 
+Construire une fonction qui permet de représenter la distribution d’une série de données. 
+
+```{r}
+#la fonction
+
+plot_distribution <- function(data, variable, title = "Distribution d'une série ", color = "blue")
+  
+  #Création du graphique
+  
+  ggplot(data, aes_string(x = variable)) + geom_histogram(aes(y = ..density..), 
+                   binwidth = 0.3,         # Largeur des barres
+                   fill = color,           #Couleur des barres
+                   alpha = 0.6,            #Transparence des barres
+                   color = "black") +      #Bordure des barres
+    geom_density(color = "red", size = 1) + #Courbe de densité
+    labs(title = title, x = variable, y = "Densité") + #Titre et étiquettes des axes
+    theme_minimal()                         #Thème visuel simple
+```
+
+Application de la fonction à une colonne de iris
+
+```{r}
+# Appliquer la fonction à la colonne "Sepal.Width" avec une couleur verte
+plot_distribution(iris, "Sepal.Width", 
+                  title = "Distribution de la largeur des sépales", 
+                  color = "green")
+```
 ### Exercice 3
+
+La corrélation indique un lien faible ou non linéaire entre x et y.
+
+
+```{r}
+set.seed(123)  
+
+x <- rnorm(100)  #Générer un échantillon de 100 points suivant une loi normale
+
+y <- x * x
+
+#Calcul de la corrélation
+
+correlation <- cor(x, y)
+
+#les résultats
+
+cat("La corrélation entre x et y est :", correlation, "\n")
+```
+
 
 ### Exercice 4
 

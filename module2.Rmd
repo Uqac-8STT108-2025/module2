@@ -16,14 +16,11 @@ output: html_document
 ---
 
 ```{r libairies, include=FALSE}
+#install.packages("skimr")
 library(tidyverse)
-#library(knitr)
+library(knitr)
 ```
 
-```{r dataset}
-vehicule <- read.csv("Dataset 1.csv")
-head(vehicule)
-```
 
 ## Statistiques descriptives
 
@@ -31,13 +28,13 @@ head(vehicule)
 
 calculons la moyenne et variance, que remarquez-vous? Pourquoi?
 
-On remarque que:Les valeurs de la moyenne et de la variance calculées sur un échantillon ne sont pas égales aux valeurs théoriques (moyenne=0 et variance=1).
+On remarque que les valeurs de la moyenne et de la variance calculées sur un échantillon ne sont pas égales aux valeurs théoriques (moyenne=0 et variance=1).
 
-Parce que:Avec une petite echantillon de n=100 les nombres aléatoires générés ne couvrent pas uniformément tout l’espace de la distribution normale.
+pour n=100, Ces résultats s'écartent de ceux attendus à cause du biais d'échantillonage.
 
-```{r}
+```{r serie_norm}
 set.seed(42)
-x <- rnorm(100, mean = 0, sd = 1)
+x <- rnorm(100)
 
 #Calculons la moyenne
 
@@ -56,7 +53,7 @@ Augmenter le nombre d’observation dans la fonction rnorm() qui génère des do
 
 En augmentant le nombre d'observation a n=10000 nous remarquons que les résultats sont très proches des valeurs théoriques(moyenne=0 et variance=1).
 
-```{r}
+```{r augmentation_taille}
 set.seed(123)
 x_large <- rnorm(10000, mean = 0, sd = 1)
 
@@ -78,37 +75,38 @@ cat("Variance avec grand échantillon :", var_large, "\n")
 
 Construire une fonction qui permet de représenter la distribution d’une série de données. 
 
-```{r}
+```{r plot_distribution}
 #la fonction
 
-plot_distribution <- function(data, variable, title = "Distribution d'une série ", color = "blue")
+plot_distribution <- function(data, variable, title = "Distribution d'une série ", color = "gray")
   
   #Création du graphique
   
-  ggplot(data, aes_string(x = variable)) + geom_histogram(aes(y = ..density..), 
+  ggplot(data, aes_string(x = variable)) +
+  geom_histogram(aes(y = ..density..), 
                    binwidth = 0.3,         # Largeur des barres
                    fill = color,           #Couleur des barres
                    alpha = 0.6,            #Transparence des barres
                    color = "black") +      #Bordure des barres
-    geom_density(color = "red", size = 1) + #Courbe de densité
-    labs(title = title, x = variable, y = "Densité") + #Titre et étiquettes des axes
+    geom_density(color = "blue", size = 1) + #Courbe de densité
+    labs(title = title, x = variable, y = "Densite") + #Titre et étiquettes des axes
     theme_minimal()                         #Thème visuel simple
 ```
 
 Application de la fonction à une colonne de iris
 
-```{r}
-# Appliquer la fonction à la colonne "Sepal.Width" avec une couleur verte
+```{r application_iris}
+# Appliquer la fonction à la  colonne "Sepal.Width" 
 plot_distribution(iris, "Sepal.Width", 
                   title = "Distribution de la largeur des sépales", 
-                  color = "green")
+                  color = "gray")
 ```
 ### Exercice 3
 cor(x,y)=0,1881861
-La corrélation indique un lien faible ou non linéaire entre x et y.
+Cette valeur exprime une faible corrélation linéaire entre x et y.
 
 
-```{r}
+```{r correlation_lineaire}
 set.seed(123)  
 
 x <- rnorm(100)  #Générer un échantillon de 100 points suivant une loi normale
@@ -127,13 +125,59 @@ cat("La corrélation entre x et y est :", correlation, "\n")
 
 ### Exercice 4
 
+
+```{r dataset}
+vehicule <- read.csv("Dataset 1.csv")
+head(vehicule)
+```
+```{r colonnes}
+glimpse(vehicule)
+cat("\n nbre valeurs manquantes : " , sum(is.na(vehicule)))
+```
+
+
 ### Exercice 5
+
+```{r fonction_skim}
+library(skimr)
+skim(vehicule)%>%
+  kable()
+```
 
 ## Détection de bruit et données abbérantes
 
 ### Exercice 1
 
+```{r outliers}
+outliers <- function(dataset) {
+  # On enleve  les valeurs manquantes pour éviter des erreurs
+  data <- na.omit(dataset)
+
+  Q1 <- quantile(data, 0.25)
+  Q3 <- quantile(data, 0.75)
+  IQR <- Q3-Q1
+  
+  # Calcul des bornes
+  borne_inf <- Q1 - 1.5 * IQR
+  borne_sup <- Q3 + 1.5 * IQR
+  
+  # Identification des outliers
+  outliers <- data[data < borne_inf | data > borne_sup]
+  
+  print(outliers)
+}
+
+# Test avec la variable x
+x <- c(-5, rnorm(100), 6)
+valeurs_extremes <- outliers(x)
+cat("valeurs extremes :" , valeurs_extremes)
+
+```
+
+
 ### Exercice 2 
+
+
 
 
 ## Visualisation

@@ -183,9 +183,65 @@ cat("valeurs extremes :" , valeurs_extremes)
 ## Visualisation
 
 ### Exercice 1
+  On obtient un graphique vide en mentionnant que le jeu de donnée mpg.
+  Il y a 234 observations et 11 colonnes dans la base de donnée mpg.
+  La variable 'drv' représente le type de transmission où f représente la traction avant et r la traction arrière.
+  Le nuage de points entre la variable 'class' et la variable 'drv' est inutile car il n'y a pas de relation entre ces deux variables.
+```{r visualisation-mpg}
+
+#Chargement de la librairie ggplot2
+library(ggplot2)
+
+#Exécution de la commande ggplot
+ggplot(data=mpg)  
+
+#Pour savoir le nombre de lignes et de colonnes
+nrow(mpg)
+ncol(mpg)
+
+
+#Création d'un nuage de points entre la variable 'hwy' et la variable 'cyl'
+hwy_cyl<-ggplot(mpg,aes(x=hwy,y=cyl))+
+  geom_point() +
+  labs(title='Relation entre les kilomètres de routes et le nombre de cylindre ')+
+  xlab('Les kilomètres de routes par gallon')+
+  ylab('Le nombre de cylindre')
+hwy_cyl
+
+#Création d 'un nuage de points entre la variable 'class' et la variable 'drv' 
+class_drv<-ggplot(mpg,aes(x=class,y=drv))+
+  geom_point()+
+  labs(title='Relation entre les classes et le type de transmission')+
+  xlab('Les types de voiture(class)')+
+  ylab('Le type de transmission(drv)')
+class_drv
+```
+
+
 
 ### Exercice 2
+Quand on met la couleur dans l'esthétique, R le considère comme une variable dans les données, donc pour obtenir la couleur bleue il faut le mettre en dehors de l'esthétique.
+Les variables catégoriques sont: manufacturer, model,trans,fl et class puis les variables continues sont: displ,year,cyl,drv,cty et hwy.
+On peut voir ces informations en exécutant View(mpg).
 
+En mappant la même variable à plusieurs esthétiques, le graphique sera difficile à interpréter.
+
+L'esthétique du trait (stroke) sert à modifier la largeur de la bordure des points pour un nuage de points.
+
+En associant l'esthétique à une condition, on obtient une visualisation qui montre les variables qui respectent cette condition (true) et celles qui ne respectent pas cette condition(false).
+
+```{r exo2-visualisation}
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy),color="blue")
+
+#Mappez une même variable à plusieurs esthétiques
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy,color=year,alpha=year))
+
+#Associer une esthétique avec autre chose qu'un nom de variable
+ggplot(data=mpg)+
+  geom_point(mapping=aes(x=displ,y=hwy,color=displ<5))
+```
 ### Exercice 3
 
 

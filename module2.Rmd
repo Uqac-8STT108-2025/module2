@@ -91,6 +91,7 @@ plot_distribution <- function(data, variable, title = "Distribution d'une série
     geom_density(color = "blue", size = 1) + #Courbe de densité
     labs(title = title, x = variable, y = "Densite") + #Titre et étiquettes des axes
     theme_minimal()                         #Thème visuel simple
+
 ```
 
 Application de la fonction à une colonne de iris
@@ -103,7 +104,7 @@ plot_distribution(iris, "Sepal.Width",
 ```
 ### Exercice 3
 cor(x,y)=0,1881861
-Cette valeur exprime une faible corrélation linéaire entre x et y.
+Cette valeur exprime une faible corrélation positive linéaire entre x et y.
 
 
 ```{r correlation_lineaire}
@@ -136,6 +137,12 @@ cat("\n nbre valeurs manquantes : " , sum(is.na(vehicule)))
 ```
 
 
+Nous constatons ici que toutes les valeurs manquantes (NA) se retrouvent dans la variable COMMUTE_DISTANCE.
+```{r résumé}
+summary(vehicule)
+```
+
+
 ### Exercice 5
 
 ```{r fonction_skim}
@@ -164,10 +171,12 @@ outliers <- function(dataset) {
   # Identification des outliers
   outliers <- data[data < borne_inf | data > borne_sup]
   
-  print(outliers)
+  #print(outliers)
+  return (outliers) #utilisation explicite de return pour améliorer la lisibilité du code.
 }
 
 # Test avec la variable x
+set.seed(42) #pour la reproductibilité
 x <- c(-5, rnorm(100), 6)
 valeurs_extremes <- outliers(x)
 cat("valeurs extremes :" , valeurs_extremes)
@@ -177,7 +186,7 @@ cat("valeurs extremes :" , valeurs_extremes)
 
 ### Exercice 2 
 
-
+Le dataset dataset_pratique.csv est inexistant.
 
 
 ## Visualisation
@@ -221,8 +230,8 @@ class_drv
 
 ### Exercice 2
 Quand on met la couleur dans l'esthétique, R le considère comme une variable dans les données, donc pour obtenir la couleur bleue il faut le mettre en dehors de l'esthétique.
-Les variables catégoriques sont: manufacturer, model,trans,fl et class puis les variables continues sont: displ,year,cyl,drv,cty et hwy.
-On peut voir ces informations en exécutant View(mpg).
+Les variables catégoriques sont: manufacturer, model,trans,fl,drv et class puis les variables continues sont: displ,year,cyl,cty et hwy.
+On peut voir ces informations en exécutant View(mpg) ou glimpse(mpg).
 
 En mappant la même variable à plusieurs esthétiques, le graphique sera difficile à interpréter.
 
@@ -242,8 +251,10 @@ ggplot(data=mpg)+
 ggplot(data=mpg)+
   geom_point(mapping=aes(x=displ,y=hwy,color=displ<5))
 ```
+
 ### Exercice 3
 
-
+Les cellules vides du tracé avec facet_grid(drv ~ cyl) signifient qu'il n'existe dans notre jeu de données aucune correspondance entre cette valeur de drv et celle de cyl.
+Cette visualisation met en lumière les différentes cylindré(cyl) existantes dans notre dataset pour chacune des tractions (4,f,r).
 
 

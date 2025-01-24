@@ -33,46 +33,37 @@ On remarque que les valeurs de la moyenne et de la variance calculées sur un é
 pour n=100, Ces résultats s'écartent de ceux attendus à cause du biais d'échantillonage.
 
 ```{r serie_norm}
-set.seed(42)
 x <- rnorm(100)
 
 #Calculons la moyenne
 
-mean_x <- mean(x)
+mean(x)
 
 #Calculons la variance
 
-var_x <- var(x)
-
-#Les résultats
-
-cat("Moyenne :", mean_x, "\n")
-cat("Variance :", var_x, "\n")
+var(x)
 ```
+
+
 Augmenter le nombre d’observation dans la fonction rnorm() qui génère des données d’une loi normale, que se passe t-il?
 
 En augmentant le nombre d'observation a n=10000 nous remarquons que les résultats sont très proches des valeurs théoriques(moyenne=0 et variance=1).
 
 ```{r augmentation_taille}
-set.seed(123)
-x_large <- rnorm(10000, mean = 0, sd = 1)
+y <- rnorm(10000)
 
 #Calcul de la moyenne
 
-mean_large <- mean(x_large)
+mean(y)
 
 #Calcul de la variance
 
-var_large <- var(x_large)
-
-#Affichage des résultats
-
-cat("Moyenne avec grand échantillon :", mean_large, "\n")
-cat("Variance avec grand échantillon :", var_large, "\n")
+var(y)
 ```
 
 ### Exercice 2
 
+<<<<<<< HEAD
 Construire une fonction qui permet de représenter la distribution d’une série de données. 
 
 ```{r plot_distribution}
@@ -91,35 +82,49 @@ plot_distribution <- function(data, variable, title = "Distribution d'une série
     geom_density(color = "blue", size = 1) + #Courbe de densité
     labs(title = title, x = variable, y = "Densite") + #Titre et étiquettes des axes
     theme_minimal()                         #Thème visuel simple
+
 ```
+=======
+Construire une fonction qui permet de représenter la distribution d’une série de données.
+>>>>>>> dae38d011d95bb1f1bc6c816f94f23afc1b78f0c
 
 Application de la fonction à une colonne de iris
 
-```{r application_iris}
-# Appliquer la fonction à la  colonne "Sepal.Width" 
-plot_distribution(iris, "Sepal.Width", 
-                  title = "Distribution de la largeur des sépales", 
-                  color = "gray")
+```{r}
+library(ggplot2)
+
+Ma_fonction <- function(data, variable,color = "black"){
+ggplot(data, aes_string(x = variable)) +
+    geom_histogram(color = color) +
+    labs(title = paste("Mon histogramme de distribution", variable),x = variable,y = "nombre d'observations"
+    )
+}
+
+#application sur iris
+
+Ma_fonction(iris, "Sepal.Width",color = "yellow")
 ```
+
+
+
 ### Exercice 3
 cor(x,y)=0,1881861
-Cette valeur exprime une faible corrélation linéaire entre x et y.
+<<<<<<< HEAD
+Cette valeur exprime une faible corrélation positive linéaire entre x et y.
+=======
+Cette valeur exprime une faible corrélation linéaire entre x et y
+>>>>>>> dae38d011d95bb1f1bc6c816f94f23afc1b78f0c
 
 
 ```{r correlation_lineaire}
-set.seed(123)  
-
-x <- rnorm(100)  #Générer un échantillon de 100 points suivant une loi normale
+x <- rnorm(100)
 
 y <- x * x
 
 #Calcul de la corrélation
 
 correlation <- cor(x, y)
-
-#les résultats
-
-cat("La corrélation entre x et y est :", correlation, "\n")
+cor(x, y)
 ```
 
 
@@ -133,6 +138,12 @@ head(vehicule)
 ```{r colonnes}
 glimpse(vehicule)
 cat("\n nbre valeurs manquantes : " , sum(is.na(vehicule)))
+```
+
+
+Nous constatons ici que toutes les valeurs manquantes (NA) se retrouvent dans la variable COMMUTE_DISTANCE.
+```{r résumé}
+summary(vehicule)
 ```
 
 
@@ -164,10 +175,12 @@ outliers <- function(dataset) {
   # Identification des outliers
   outliers <- data[data < borne_inf | data > borne_sup]
   
-  print(outliers)
+  #print(outliers)
+  return (outliers) #utilisation explicite de return pour améliorer la lisibilité du code.
 }
 
 # Test avec la variable x
+set.seed(42) #pour la reproductibilité
 x <- c(-5, rnorm(100), 6)
 valeurs_extremes <- outliers(x)
 cat("valeurs extremes :" , valeurs_extremes)
@@ -177,7 +190,7 @@ cat("valeurs extremes :" , valeurs_extremes)
 
 ### Exercice 2 
 
-
+Le dataset dataset_pratique.csv est inexistant.
 
 
 ## Visualisation
@@ -221,8 +234,8 @@ class_drv
 
 ### Exercice 2
 Quand on met la couleur dans l'esthétique, R le considère comme une variable dans les données, donc pour obtenir la couleur bleue il faut le mettre en dehors de l'esthétique.
-Les variables catégoriques sont: manufacturer, model,trans,fl et class puis les variables continues sont: displ,year,cyl,drv,cty et hwy.
-On peut voir ces informations en exécutant View(mpg).
+Les variables catégoriques sont: manufacturer, model,trans,fl,drv et class puis les variables continues sont: displ,year,cyl,cty et hwy.
+On peut voir ces informations en exécutant View(mpg) ou glimpse(mpg).
 
 En mappant la même variable à plusieurs esthétiques, le graphique sera difficile à interpréter.
 
@@ -242,8 +255,10 @@ ggplot(data=mpg)+
 ggplot(data=mpg)+
   geom_point(mapping=aes(x=displ,y=hwy,color=displ<5))
 ```
+
 ### Exercice 3
 
-
+Les cellules vides du tracé avec facet_grid(drv ~ cyl) signifient qu'il n'existe dans notre jeu de données aucune correspondance entre cette valeur de drv et celle de cyl.
+Cette visualisation met en lumière les différentes cylindré(cyl) existantes dans notre dataset pour chacune des tractions (4,f,r).
 
 

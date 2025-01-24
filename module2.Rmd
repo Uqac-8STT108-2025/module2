@@ -28,9 +28,6 @@ library(knitr)
 
 calculons la moyenne et variance, que remarquez-vous? Pourquoi?
 
-On remarque que les valeurs de la moyenne et de la variance calculées sur un échantillon ne sont pas égales aux valeurs théoriques (moyenne=0 et variance=1).
-
-pour n=100, Ces résultats s'écartent de ceux attendus à cause du biais d'échantillonage.
 
 ```{r serie_norm}
 x <- rnorm(100)
@@ -44,10 +41,16 @@ mean(x)
 var(x)
 ```
 
+On remarque que les valeurs de la moyenne et de la variance calculées sur un échantillon ne sont pas égales aux valeurs théoriques.
 
-Augmenter le nombre d’observation dans la fonction rnorm() qui génère des données d’une loi normale, que se passe t-il?
+( **moyenne= `r round(mean(x),2)`** et **variance `r round(var(x),2)`** )
 
-En augmentant le nombre d'observation a n=10000 nous remarquons que les résultats sont très proches des valeurs théoriques(moyenne=0 et variance=1).
+pour n=100, Ces résultats s'écartent de ceux attendus à cause du biais d'échantillonage.
+
+
+* Augmenter le nombre d’observation dans la fonction rnorm() qui génère des données d’une loi normale, que se passe t-il?
+
+
 
 ```{r augmentation_taille}
 y <- rnorm(10000)
@@ -61,59 +64,42 @@ mean(y)
 var(y)
 ```
 
+**moy = `r round(mean(y),2) `**
+
+**var = `r round(var(y),2) `**
+
+En augmentant le nombre d'observation a n=10000 nous remarquons que les résultats se rapprochent des valeurs théoriques (moyenne=0 et variance=1).
+
+
+
 ### Exercice 2
 
-<<<<<<< HEAD
 Construire une fonction qui permet de représenter la distribution d’une série de données. 
 
-```{r plot_distribution}
+```{r plot_distribution, warning= FALSE}
 #la fonction
 
-plot_distribution <- function(data, variable, title = "Distribution d'une série ", color = "gray")
+plot_distribution <- function(data, variable, title = "Distribution d'une série ",couleur="grey")
   
   #Création du graphique
   
   ggplot(data, aes_string(x = variable)) +
   geom_histogram(aes(y = ..density..), 
                    binwidth = 0.3,         # Largeur des barres
-                   fill = color,           #Couleur des barres
+                   fill = couleur,           #Couleur des barres
                    alpha = 0.6,            #Transparence des barres
-                   color = "black") +      #Bordure des barres
-    geom_density(color = "blue", size = 1) + #Courbe de densité
+                   color = "grey" ) +      #Bordure des barres
+    geom_density(color = "black", size = 1) + #Courbe de densité
     labs(title = title, x = variable, y = "Densite") + #Titre et étiquettes des axes
     theme_minimal()                         #Thème visuel simple
 
-```
-=======
-Construire une fonction qui permet de représenter la distribution d’une série de données.
->>>>>>> dae38d011d95bb1f1bc6c816f94f23afc1b78f0c
+plot_distribution(iris, "Sepal.Width")
 
-Application de la fonction à une colonne de iris
-
-```{r}
-library(ggplot2)
-
-Ma_fonction <- function(data, variable,color = "black"){
-ggplot(data, aes_string(x = variable)) +
-    geom_histogram(color = color) +
-    labs(title = paste("Mon histogramme de distribution", variable),x = variable,y = "nombre d'observations"
-    )
-}
-
-#application sur iris
-
-Ma_fonction(iris, "Sepal.Width",color = "yellow")
 ```
 
 
 
 ### Exercice 3
-cor(x,y)=0,1881861
-<<<<<<< HEAD
-Cette valeur exprime une faible corrélation positive linéaire entre x et y.
-=======
-Cette valeur exprime une faible corrélation linéaire entre x et y
->>>>>>> dae38d011d95bb1f1bc6c816f94f23afc1b78f0c
 
 
 ```{r correlation_lineaire}
@@ -127,6 +113,10 @@ correlation <- cor(x, y)
 cor(x, y)
 ```
 
+**cor(x,y)= `r round(correlation,2)`**
+
+Cette valeur exprime une faible corrélation linéaire entre x et y.
+
 
 ### Exercice 4
 
@@ -138,18 +128,22 @@ head(vehicule)
 ```{r colonnes}
 glimpse(vehicule)
 cat("\n nbre valeurs manquantes : " , sum(is.na(vehicule)))
+
+cat("\n nbre valeurs manquantes de la variable COMMUTE_DISTANCE  : " , sum(is.na(vehicule$COMMUTE_DISTANCE)))
+
 ```
 
 
 Nous constatons ici que toutes les valeurs manquantes (NA) se retrouvent dans la variable COMMUTE_DISTANCE.
-```{r résumé}
+
+```{r resume}
 summary(vehicule)
 ```
 
 
 ### Exercice 5
 
-```{r fonction_skim}
+```{r fonction_skim,warning=FALSE}
 library(skimr)
 skim(vehicule)%>%
   kable()
@@ -163,6 +157,7 @@ skim(vehicule)%>%
 outliers <- function(dataset) {
   # On enleve  les valeurs manquantes pour éviter des erreurs
   data <- na.omit(dataset)
+  if(is.numeric(dataset)){
 
   Q1 <- quantile(data, 0.25)
   Q3 <- quantile(data, 0.75)
@@ -174,13 +169,15 @@ outliers <- function(dataset) {
   
   # Identification des outliers
   outliers <- data[data < borne_inf | data > borne_sup]
-  
   #print(outliers)
   return (outliers) #utilisation explicite de return pour améliorer la lisibilité du code.
+  }else{
+    
+  }
 }
 
 # Test avec la variable x
-set.seed(42) #pour la reproductibilité
+set.seed(42) #pour la reproductibilité des resultats
 x <- c(-5, rnorm(100), 6)
 valeurs_extremes <- outliers(x)
 cat("valeurs extremes :" , valeurs_extremes)
@@ -188,37 +185,49 @@ cat("valeurs extremes :" , valeurs_extremes)
 ```
 
 
-### Exercice 2 
+### Exercice 2 Détection des valeurs abérantes
 
-Le dataset dataset_pratique.csv est inexistant.
+```{r detection_valeurs_aberantes}
+#le dataset 1 est enregistre sous la variable vehicule. On l'a deja chargee dans le chunck 'r dataset'
+#plus haut.
+
+extreme_vehicule <- vehicule
+
+df_numeriques <- vehicule %>%
+  select_if(is.numeric)  # Sélection des colonnes numériques
+head(df_numeriques)
+
+```
+
+Il faut répondre a la question sur les colonnes de df_numeriques
 
 
 ## Visualisation
 
 ### Exercice 1
-  On obtient un graphique vide en mentionnant que le jeu de donnée mpg.
-  Il y a 234 observations et 11 colonnes dans la base de donnée mpg.
+
+```{r execution_ggplot}
+
+ggplot(data = mpg)
+
+```
+
+  On obtient un graphique vide en ne mentionnant que le jeu de donnée mpg.
+  
+  Il y a **`r nrow(mpg)`** observations (lignes) et **`r ncol(mpg)`** colonnes (variables) dans la base de donnée mpg.
+  
   La variable 'drv' représente le type de transmission où f représente la traction avant et r la traction arrière.
   Le nuage de points entre la variable 'class' et la variable 'drv' est inutile car il n'y a pas de relation entre ces deux variables.
-```{r visualisation-mpg}
-
-#Chargement de la librairie ggplot2
-library(ggplot2)
-
-#Exécution de la commande ggplot
-ggplot(data=mpg)  
-
-#Pour savoir le nombre de lignes et de colonnes
-nrow(mpg)
-ncol(mpg)
-
+  
+```{r nuage_point_hwy_cyl}
 
 #Création d'un nuage de points entre la variable 'hwy' et la variable 'cyl'
-hwy_cyl<-ggplot(mpg,aes(x=hwy,y=cyl))+
+
+hwy_cyl<-ggplot(mpg,aes(x=cyl,y=hwy))+
   geom_point() +
   labs(title='Relation entre les kilomètres de routes et le nombre de cylindre ')+
-  xlab('Les kilomètres de routes par gallon')+
-  ylab('Le nombre de cylindre')
+  xlab('nbr cylindres')+
+  ylab('consommation')
 hwy_cyl
 
 #Création d 'un nuage de points entre la variable 'class' et la variable 'drv' 
@@ -228,13 +237,27 @@ class_drv<-ggplot(mpg,aes(x=class,y=drv))+
   xlab('Les types de voiture(class)')+
   ylab('Le type de transmission(drv)')
 class_drv
+
 ```
+Ce qui se passe : Les deux variable étant catégoriques, elle ont été converties en variables discretes (factors),
+puis R  a représenté le graphe des variables discrètes correspondantes.
+
+Cette représentation n'est pas utile, par ce qu'il n'y a pas d'ordre dans ces variables, donc le graphe est
+
+difficile à interpréter. 
+
+Pour régler ce problème, on aurait pu utiliser le diagramme en barres.
 
 
 
 ### Exercice 2
+
 Quand on met la couleur dans l'esthétique, R le considère comme une variable dans les données, donc pour obtenir la couleur bleue il faut le mettre en dehors de l'esthétique.
-Les variables catégoriques sont: manufacturer, model,trans,fl,drv et class puis les variables continues sont: displ,year,cyl,cty et hwy.
+
+Les variables catégoriques sont : manufacturer, model,trans,fl, drv et class.
+
+Les variables continues sont : displ, year, cyl, cty et hwy.
+
 On peut voir ces informations en exécutant View(mpg) ou glimpse(mpg).
 
 En mappant la même variable à plusieurs esthétiques, le graphique sera difficile à interpréter.
@@ -258,7 +281,15 @@ ggplot(data=mpg)+
 
 ### Exercice 3
 
-Les cellules vides du tracé avec facet_grid(drv ~ cyl) signifient qu'il n'existe dans notre jeu de données aucune correspondance entre cette valeur de drv et celle de cyl.
+Les cellules vides du tracé avec facet_grid(drv ~ cyl) signifient que pour certaines valeurs de la variable drv, il
+n'existe aucune correspondance dans la variable cyl
 Cette visualisation met en lumière les différentes cylindré(cyl) existantes dans notre dataset pour chacune des tractions (4,f,r).
 
+
+```{r facet_grid}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = drv, y = cyl))+
+  facet_grid(drv ~ cyl)
+
+```
 

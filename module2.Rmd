@@ -19,6 +19,7 @@ output: html_document
 #install.packages("skimr")
 library(tidyverse)
 library(knitr)
+library(readr)
 ```
 
 
@@ -188,18 +189,17 @@ cat("valeurs extremes :" , valeurs_extremes)
 ### Exercice 2 Détection des valeurs abérantes
 
 ```{r detection_valeurs_aberantes}
-#le dataset 1 est enregistre sous la variable vehicule. On l'a deja chargee dans le chunck 'r dataset'
-#plus haut.
+dataset1<- read_csv("Dataset 1.csv")
 
-extreme_vehicule <- vehicule
-
-df_numeriques <- vehicule %>%
-  select_if(is.numeric)  # Sélection des colonnes numériques
-head(df_numeriques)
-
+# Sélection des colonnes numériques
+df_numeriques <- dataset1 %>%
+  select_if(is.numeric)  
+#appel de la fonction outliers pour chacun des champs numérique de notre dataset
+for (elem in names(df_numeriques)){
+  cat("valeurs extremes de la variable :",elem,"\n")
+  cat(sort(outliers(df_numeriques[[elem]])),"\n\n") # outliers prend un vecteur en paramètre d'où le [[]]
+}
 ```
-
-Il faut répondre a la question sur les colonnes de df_numeriques
 
 
 ## Visualisation

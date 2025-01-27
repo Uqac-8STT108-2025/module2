@@ -169,9 +169,13 @@ outliers <- function(dataset) {
   borne_sup <- Q3 + 1.5 * IQR
   
   # Identification des outliers
-  outliers <- data[data < borne_inf | data > borne_sup]
+ extremes <- data[data < borne_inf | data > borne_sup]
   #print(outliers)
-  return (outliers) #utilisation explicite de return pour améliorer la lisibilité du code.
+  df <- data.frame(outliers = extremes)
+  resultat <- df %>%
+  count(outliers, name = "occurences")
+  
+  return(t(resultat)) #on retourne la transposee
   }else{
     
   }
@@ -181,7 +185,8 @@ outliers <- function(dataset) {
 set.seed(42) #pour la reproductibilité des resultats
 x <- c(-5, rnorm(100), 6)
 valeurs_extremes <- outliers(x)
-cat("valeurs extremes :" , valeurs_extremes)
+print("valeurs extremes : ") 
+valeurs_extremes
 
 ```
 
@@ -196,8 +201,8 @@ df_numeriques <- dataset1 %>%
   select_if(is.numeric)  
 #appel de la fonction outliers pour chacun des champs numérique de notre dataset
 for (elem in names(df_numeriques)){
-  cat("valeurs extremes de la variable :",elem,"\n")
-  cat(sort(outliers(df_numeriques[[elem]])),"\n\n") # outliers prend un vecteur en paramètre d'où le [[]]
+  cat("\n valeurs extremes de la variable : ",elem,"\n\n")
+  print((outliers(df_numeriques[[elem]]))) # outliers prend un vecteur en paramètre d'où le [[]]
 }
 ```
 
